@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--应用场景一：查看当前Client是不是主机-->
+    <bean id="adShowLeader" class="org.sprintdragon.centralized.node.zookeeper.LeaderDispatch" scope="singleton"
+          init-method="init">
+        <constructor-arg index="0" ref="client"/>
+    </bean>
+    <!--应用场景一：监控并同步所有Client的数据-->
+    <bean id="publishAdFlush" class="org.sprintdragon.centralized.node.zookeeper.DataSourceWatcher" scope="singleton"
+          init-method="init">
+        <constructor-arg index="0" ref="client"/>
+    </bean>
+
+</beans>
