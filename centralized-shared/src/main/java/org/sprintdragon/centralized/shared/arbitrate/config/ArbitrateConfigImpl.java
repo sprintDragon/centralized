@@ -6,6 +6,8 @@ import org.sprintdragon.centralized.shared.model.Unit;
 import org.sprintdragon.centralized.shared.model.enums.MsType;
 import org.sprintdragon.centralized.shared.model.info.StatInfo;
 
+import java.util.List;
+
 /**
  * Created by wangdi on 17-2-22.
  */

@@ -21,6 +21,8 @@ import org.sprintdragon.centralized.shared.model.Node;
 import org.sprintdragon.centralized.shared.model.enums.MsType;
 import org.sprintdragon.centralized.shared.model.info.StatInfo;
 
+import java.util.List;
+
 /**
  * 仲裁器相关配置信息
  *
