@@ -5,10 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import org.sprintdragon.centralized.shared.arbitrate.config.ArbitrateConfigRegistry;
+import org.sprintdragon.centralized.shared.arbitrate.event.UnitOperateEvent;
 import org.sprintdragon.centralized.shared.model.Unit;
 import org.sprintdragon.centralized.shared.model.info.DbInfo;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,11 +21,14 @@ import java.util.Map;
 public class DynamicDataSourceManager implements InitializingBean {
 
     private Map<String, DruidDataSource> dataSourceMap = new HashMap<>();
+    @Resource
+    UnitOperateEvent unitOperateEvent;
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        Unit unit = ArbitrateConfigRegistry.getConfig().currentUnit();
-        addDataSourceByUnit(unit);
+        for (Unit unit : unitOperateEvent.list()) {
+            addDataSourceByUnit(unit);
+        }
     }
 
     public void addDataSourceByUnit(Unit unit) throws Exception {
@@ -49,6 +53,11 @@ public class DynamicDataSourceManager implements InitializingBean {
         } else {
             return new JdbcTemplate(druidDataSource);
         }
+    }
+
+    public void removeDataSourceByUnitId(String unitId) {
+        //todo
+        dataSourceMap.remove(unitId);
     }
 
     public void close() {
