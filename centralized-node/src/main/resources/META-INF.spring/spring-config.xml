@@ -6,8 +6,6 @@
     <!-- 注入获取上下文工具类的applicationContext属性 -->
     <bean id="springContextUtil" class="org.sprintdragon.centralized.shared.utils.SpringContextUtil"/>
 
-    <util:list id="dbSources"/>
-
     <import resource="spring-config-zk.xml"/>
     <import resource="spring-config-zk-watcher.xml"/>
 
