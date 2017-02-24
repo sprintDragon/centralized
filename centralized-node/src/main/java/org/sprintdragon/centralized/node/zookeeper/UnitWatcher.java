@@ -5,22 +5,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
-import org.sprintdragon.centralized.node.dao.DynamicDataSourceManager;
 import org.sprintdragon.centralized.shared.arbitrate.helper.ManagePathUtils;
 import org.sprintdragon.centralized.shared.model.Unit;
-
-import javax.annotation.Resource;
 
 /**
  * Created by wangdi on 17-2-23.
  */
 @Slf4j
-public class DataSourceWatcher extends ZKBase {
+public class UnitWatcher extends ZKBase {
 
-    @Resource
-    DynamicDataSourceManager dynamicDataSourceManager;
-
-    public DataSourceWatcher(CuratorFramework curatorFramework) {
+    public UnitWatcher(CuratorFramework curatorFramework) {
         super(curatorFramework);
     }
 
@@ -41,11 +35,9 @@ public class DataSourceWatcher extends ZKBase {
                 switch (event.getType()) {
                     case CHILD_ADDED:
                         log.info("watch CHILD_ADDED");
-                        dynamicDataSourceManager.addDataSourceByUnit(unit);
                         break;
                     case CHILD_REMOVED:
                         log.info("watch CHILD_REMOVED");
-                        dynamicDataSourceManager.removeDataSourceByUnitId(unit.getUnitId());
                         break;
                     case CHILD_UPDATED:
                         log.info("watch CHILD_UPDATE 不处理");

@@ -1,14 +1,10 @@
 package org.sprintdragon.centralized.node.scheduled;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.sprintdragon.centralized.node.dao.DynamicDataSourceManager;
 import org.sprintdragon.centralized.shared.arbitrate.config.ArbitrateConfigRegistry;
-
-import javax.annotation.Resource;
 
 /**
  * Created by wangdi on 16-12-19.
@@ -17,9 +13,6 @@ import javax.annotation.Resource;
 @Slf4j
 public class TaskExecuteScheduled {
 
-    @Resource
-    DynamicDataSourceManager dynamicDataSourceManager;
-
     @Async
     @Scheduled(fixedRate = 10000, initialDelay = 2000)
     public void batchPop() {
@@ -27,7 +20,7 @@ public class TaskExecuteScheduled {
             if (ArbitrateConfigRegistry.getConfig().currentMsType().isSlave()) {
                 long startTime = System.currentTimeMillis();
                 log.info("batchPop begin thread={}", Thread.currentThread().getName());
-                long fetchNum = count();
+                long fetchNum = 1;
                 log.info("batchPop end thread={},fetchNum={},cost={}", Thread.currentThread().getName(), fetchNum, System.currentTimeMillis() - startTime);
             }
         } catch (Exception e) {
@@ -36,13 +29,13 @@ public class TaskExecuteScheduled {
     }
 
     @Async
-    @Scheduled(fixedRate = 60000, initialDelay = 2000)
+    @Scheduled(fixedRate = 10000, initialDelay = 2000)
     public void resumeTimeout() {
         try {
             if (ArbitrateConfigRegistry.getConfig().currentMsType().isMaster()) {
                 long startTime = System.currentTimeMillis();
                 log.info("resumeTimeout begin thread={}", Thread.currentThread().getName());
-                long fetchNum = count();
+                long fetchNum = 1;
                 log.info("resumeTimeout end thread={},fetchNum={},cost={}", Thread.currentThread().getName(), fetchNum, System.currentTimeMillis() - startTime);
             }
         } catch (Exception e) {
@@ -50,8 +43,4 @@ public class TaskExecuteScheduled {
         }
     }
 
-    private int count() throws Exception {
-        JdbcTemplate jdbcTemplate = dynamicDataSourceManager.getJdbcTemplateByUnitId(ArbitrateConfigRegistry.getConfig().currentUnit().getUnitId());
-        return jdbcTemplate.queryForObject("select count(*) from order_trace_info", Integer.class);
-    }
 }

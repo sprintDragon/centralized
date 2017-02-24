@@ -26,14 +26,14 @@ public class TestUnitEvent {
     public void testAdd() throws Exception {
         Unit u1 = new Unit();
         DbInfo dbInfo = new DbInfo();
-        dbInfo.setUrl("jdbc:mysql://192.168.1.2:3306/teleport?characterEncoding=utf-8");
+        dbInfo.setUrl("jdbc:mysql://192.168.1.2:3306/teleport?useSSL=false");
         dbInfo.setName("root");
-        dbInfo.setPwd("808080wd1");
+        dbInfo.setPwd("808080wd");
         u1.setUnitId("db1");
         u1.setDbInfo(dbInfo);
         unitOperateEvent.upsert(u1);
         dbInfo = new DbInfo();
-        dbInfo.setUrl("jdbc:mysql://192.168.153.36:3306/pop_customs?characterEncoding=utf-8");
+        dbInfo.setUrl("jdbc:mysql://192.168.153.36:3306/pop_customs?useSSL=false");
         dbInfo.setName("root");
         dbInfo.setPwd("123");
         u1.setUnitId("db2");

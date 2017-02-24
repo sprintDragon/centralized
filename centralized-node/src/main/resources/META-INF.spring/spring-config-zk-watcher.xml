@@ -9,7 +9,7 @@
         <constructor-arg index="0" ref="client"/>
     </bean>
     <!--应用场景一：监控并同步所有Client的数据-->
-    <bean id="publishAdFlush" class="org.sprintdragon.centralized.node.zookeeper.DataSourceWatcher" scope="singleton"
+    <bean id="publishAdFlush" class="org.sprintdragon.centralized.node.zookeeper.UnitWatcher" scope="singleton"
           init-method="init">
         <constructor-arg index="0" ref="client"/>
     </bean>

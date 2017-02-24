@@ -79,6 +79,7 @@
     </appender>
 
     <logger name="org.springframework" level="INFO"/>
+    <logger level="INFO" name="com.alibaba.druid.pool"/>
 
     <root level="INFO">
         <appender-ref ref="STDOUT"/>
