@@ -44,7 +44,7 @@ public class ThroughputStatServiceImpl implements ThroughputStatService {
 
     public ThroughputStat findThroughputStatByUnitId(ThroughputCondition condition) {
         Assert.isTrue(condition != null);
-        ThroughputStatDO throughputStatDO = throughputStatRepository.findByUnitIdAndType(condition.getUnitId(), condition.getType().name());
+        ThroughputStatDO throughputStatDO = throughputStatRepository.findFirstByUnitIdAndTypeOrderByEndTimeDesc(condition.getUnitId(), condition.getType().name());
         ThroughputStat throughputStat = new ThroughputStat();
         if (throughputStatDO != null) {
             throughputStat = throughputStatDOToModel(throughputStatDO);
@@ -62,7 +62,7 @@ public class ThroughputStatServiceImpl implements ThroughputStatService {
         Date realtime = new Date(System.currentTimeMillis());
         Date from = new Date(realtime.getTime() - condition.getMax() * 60 * 1000);
         Date end = realtime;
-        List<ThroughputStatDO> throughputStatDOs = throughputStatRepository.findByUnitIdAndTypeAndEndTimeBetween(condition.getUnitId(), condition.getType().name(), from, end);
+        List<ThroughputStatDO> throughputStatDOs = throughputStatRepository.findByUnitIdAndTypeAndEndTimeBetweenOrderByEndTimeDesc(condition.getUnitId(), condition.getType().name(), from, end);
         for (AnalysisType analysisType : condition.getAnalysisType()) {
             ThroughputInfo throughputInfo = new ThroughputInfo();
             List<ThroughputStat> throughputStat = new ArrayList<ThroughputStat>();
@@ -88,7 +88,7 @@ public class ThroughputStatServiceImpl implements ThroughputStatService {
     public Map<Long, ThroughputInfo> listTimelineThroughput(TimelineThroughputCondition condition) {
         Assert.isTrue(condition != null);
         Map<Long, ThroughputInfo> throughputInfos = new LinkedHashMap<Long, ThroughputInfo>();
-        List<ThroughputStatDO> throughputStatDOs = throughputStatRepository.findByUnitIdAndTypeAndEndTimeBetween(condition.getUnitId(), condition.getType().name(), condition.getStart(), condition.getEnd());
+        List<ThroughputStatDO> throughputStatDOs = throughputStatRepository.findByUnitIdAndTypeAndEndTimeBetweenOrderByEndTimeDesc(condition.getUnitId(), condition.getType().name(), condition.getStart(), condition.getEnd());
         int size = throughputStatDOs.size();
         int k = size - 1;
         for (Long i = condition.getStart().getTime(); i <= condition.getEnd().getTime(); i += 60 * 1000) {

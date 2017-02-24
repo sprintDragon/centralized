@@ -13,8 +13,8 @@ import java.util.List;
 @Repository
 public interface ThroughputStatRepository extends PagingAndSortingRepository<ThroughputStatDO, Long>, JpaSpecificationExecutor<ThroughputStatDO> {
 
-    ThroughputStatDO findByUnitIdAndType(Long unitId, String type);
+    ThroughputStatDO findFirstByUnitIdAndTypeOrderByEndTimeDesc(Long unitId, String type);
 
-    List<ThroughputStatDO> findByUnitIdAndTypeAndEndTimeBetween(Long unitId, String type, Date begin, Date end);
+    List<ThroughputStatDO> findByUnitIdAndTypeAndEndTimeBetweenOrderByEndTimeDesc(Long unitId, String type, Date begin, Date end);
 
 }
