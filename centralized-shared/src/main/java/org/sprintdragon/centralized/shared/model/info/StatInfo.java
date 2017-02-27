@@ -16,6 +16,15 @@ public class StatInfo {
     private ThroughputStat rowThroughputStat;
 
     public void sub(StatInfo statInfo) {
+        if(mqThroughputStat==null){
+            mqThroughputStat = new ThroughputStat();
+        }
+        if(memThroughputStat==null){
+            memThroughputStat = new ThroughputStat();
+        }
+        if(rowThroughputStat==null){
+            rowThroughputStat = new ThroughputStat();
+        }
         mqThroughputStat.sub(statInfo.getMqThroughputStat());
         memThroughputStat.sub(statInfo.getMemThroughputStat());
         rowThroughputStat.sub(statInfo.getRowThroughputStat());
