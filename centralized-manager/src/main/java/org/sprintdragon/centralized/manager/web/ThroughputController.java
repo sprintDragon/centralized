@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.sprintdragon.centralized.manager.statistics.throughput.ThroughputStatService;
-import org.sprintdragon.centralized.manager.statistics.throughput.param.Kav;
+import org.sprintdragon.centralized.manager.statistics.throughput.view.Highcharts;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -25,7 +25,7 @@ public class ThroughputController {
 
     @ResponseBody
     @RequestMapping(value = "/listReal", method = {RequestMethod.GET, RequestMethod.POST})
-    public List<Kav> listReal() {
-        return throughputStatService.listRealTimeThroughtForView();
+    public Highcharts listReal() {
+        return throughputStatService.listTimeLineThroughtForView();
     }
 }

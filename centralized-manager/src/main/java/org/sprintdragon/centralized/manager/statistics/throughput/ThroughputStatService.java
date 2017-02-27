@@ -16,7 +16,10 @@
 
 package org.sprintdragon.centralized.manager.statistics.throughput;
 
-import org.sprintdragon.centralized.manager.statistics.throughput.param.*;
+import org.sprintdragon.centralized.manager.statistics.throughput.param.ThroughputCondition;
+import org.sprintdragon.centralized.manager.statistics.throughput.param.ThroughputInfo;
+import org.sprintdragon.centralized.manager.statistics.throughput.param.TimelineThroughputCondition;
+import org.sprintdragon.centralized.manager.statistics.throughput.view.Highcharts;
 import org.sprintdragon.centralized.shared.statistics.throughput.ThroughputStat;
 
 import java.util.List;
@@ -26,9 +29,9 @@ import java.util.Map;
  */
 public interface ThroughputStatService {
 
-    Map<AnalysisType, ThroughputInfo> listRealtimeThroughput(RealtimeThroughputCondition condition);
+    ThroughputInfo listRealtimeThroughput(ThroughputCondition condition);
 
-    List<Kav> listRealTimeThroughtForView();
+    Highcharts listTimeLineThroughtForView();
 
     Map<Long, ThroughputInfo> listTimelineThroughput(TimelineThroughputCondition condition);
 

@@ -19,9 +19,13 @@ package org.sprintdragon.centralized.manager.statistics.throughput.impl;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.sprintdragon.centralized.manager.statistics.throughput.ThroughputStatService;
-import org.sprintdragon.centralized.manager.statistics.throughput.param.*;
+import org.sprintdragon.centralized.manager.statistics.throughput.param.ThroughputCondition;
+import org.sprintdragon.centralized.manager.statistics.throughput.param.ThroughputInfo;
+import org.sprintdragon.centralized.manager.statistics.throughput.param.TimelineThroughputCondition;
 import org.sprintdragon.centralized.manager.statistics.throughput.repository.ThroughputStatDO;
 import org.sprintdragon.centralized.manager.statistics.throughput.repository.ThroughputStatRepository;
+import org.sprintdragon.centralized.manager.statistics.throughput.view.Highcharts;
+import org.sprintdragon.centralized.manager.statistics.throughput.view.Series;
 import org.sprintdragon.centralized.shared.statistics.throughput.ThroughputStat;
 import org.sprintdragon.centralized.shared.statistics.throughput.ThroughputType;
 import org.sprintdragon.centralized.shared.utils.CopyPropertyUtils;
@@ -60,52 +64,57 @@ public class ThroughputStatServiceImpl implements ThroughputStatService {
      * 3种时间间隔的统计信息
      */
 
-    public Map<AnalysisType, ThroughputInfo> listRealtimeThroughput(RealtimeThroughputCondition condition) {
+    public ThroughputInfo listRealtimeThroughput(ThroughputCondition condition) {
         Assert.isTrue(condition != null);
-        Map<AnalysisType, ThroughputInfo> throughputInfos = new HashMap<AnalysisType, ThroughputInfo>();
         Date realtime = new Date(System.currentTimeMillis());
-        Date from = new Date(realtime.getTime() - condition.getMax() * 60 * 1000);
+        //10分钟
+        int distance = 10;
+        int minute = 1;
+        Date from = new Date(realtime.getTime() - distance * 60 * 1000);
         Date end = realtime;
         List<ThroughputStatDO> throughputStatDOs = throughputStatRepository.findByUnitIdAndTypeAndEndTimeBetweenOrderByEndTimeDesc(condition.getUnitId(), condition.getType().name(), from, end);
-        for (AnalysisType analysisType : condition.getAnalysisType()) {
-            ThroughputInfo throughputInfo = new ThroughputInfo();
-            List<ThroughputStat> throughputStat = new ArrayList<ThroughputStat>();
-            for (ThroughputStatDO throughputStatDO : throughputStatDOs) {
-                if (realtime.getTime() - throughputStatDO.getEndTime().getTime() <= analysisType.getValue() * 60 * 1000) {
-                    throughputStat.add(throughputStatDOToModel(throughputStatDO));
-                }
+        ThroughputInfo throughputInfo = new ThroughputInfo();
+        List<ThroughputStat> throughputStat = new ArrayList<ThroughputStat>();
+        for (ThroughputStatDO throughputStatDO : throughputStatDOs) {
+            if (realtime.getTime() - throughputStatDO.getEndTime().getTime() <= distance * 60 * 1000) {
+                throughputStat.add(throughputStatDOToModel(throughputStatDO));
             }
-            throughputInfo.setItems(throughputStat);
-            throughputInfo.setSeconds(analysisType.getValue() * 60L);
-            throughputInfos.put(analysisType, throughputInfo);
         }
-        return throughputInfos;
+        throughputInfo.setItems(throughputStat);
+        //1分钟
+        throughputInfo.setSeconds(minute * 60L);
+        return throughputInfo;
 
     }
 
     @Override
-    public List<Kav> listRealTimeThroughtForView() {
-        RealtimeThroughputCondition condition = new RealtimeThroughputCondition();
+    public Highcharts listTimeLineThroughtForView() {
+        TimelineThroughputCondition condition = new TimelineThroughputCondition();
+        Date to = new Date();
+        condition.setStart(new Date(to.getTime() - 10 * 60 * 1000));
+        condition.setEnd(to);
         condition.setUnitId(101l);
-        condition.setAnalysisType(new ArrayList<AnalysisType>() {{
-            add(AnalysisType.ONE_MINUTE);
-        }});
-        List<Kav> kavs = new ArrayList<>();
+        Highcharts kavs = new Highcharts();
+        List<Series> seriesList = new ArrayList<>();
         for (ThroughputType throughputType : ThroughputType.values()) {
             condition.setType(throughputType);
-            Kav kav = new Kav();
-            kav.setName(throughputType.name());
+            Map<Long, ThroughputInfo> infos = listTimelineThroughput(condition);
+            Series series = new Series();
+            series.setName(throughputType.name());
             List<Long> vs = new ArrayList<>();
-            for (Map.Entry<AnalysisType, ThroughputInfo> entry : listRealtimeThroughput(condition).entrySet()) {
-                long n = 0;
-                for (ThroughputStat stat : entry.getValue().getItems()) {
-                    n += stat.getNumber() * stat.getSize();
-                }
-                vs.add(n);
+            List<String> xds = new ArrayList<>();
+            for (Map.Entry<Long, ThroughputInfo> entry : infos.entrySet()) {
+                vs.add(entry.getValue().getNumber());
+                xds.add(new Date(entry.getKey()).toString());
             }
-            kav.setData(vs);
-            kavs.add(kav);
+            series.setData(vs);
+            seriesList.add(series);
+            if (!xds.isEmpty()) {
+                kavs.setXaxis(xds);
+            }
         }
+
+        kavs.setSeries(seriesList);
         return kavs;
     }
 

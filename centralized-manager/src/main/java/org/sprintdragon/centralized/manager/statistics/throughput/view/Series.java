@@ -1,4 +1,4 @@
-package org.sprintdragon.centralized.manager.statistics.throughput.param;
+package org.sprintdragon.centralized.manager.statistics.throughput.view;
 
 import lombok.Data;
 import lombok.ToString;
@@ -10,7 +10,7 @@ import java.util.List;
  */
 @Data
 @ToString
-public class Kav {
+public class Series {
 
     private String name;
     private List<Long> data;

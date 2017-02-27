@@ -7,8 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.sprintdragon.centralized.manager.ManagerApplication;
 import org.sprintdragon.centralized.manager.statistics.throughput.ThroughputStatService;
-import org.sprintdragon.centralized.manager.statistics.throughput.param.AnalysisType;
-import org.sprintdragon.centralized.manager.statistics.throughput.param.RealtimeThroughputCondition;
 import org.sprintdragon.centralized.manager.statistics.throughput.param.ThroughputInfo;
 import org.sprintdragon.centralized.manager.statistics.throughput.param.TimelineThroughputCondition;
 import org.sprintdragon.centralized.shared.statistics.throughput.ThroughputStat;
@@ -17,7 +15,9 @@ import org.sprintdragon.centralized.shared.utils.CommonTimeUtils;
 
 import javax.annotation.Resource;
 import javax.management.timer.Timer;
-import java.util.*;
+import java.util.Date;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by wangdi on 17-2-24.
@@ -58,18 +58,6 @@ public class ThroughputStatServiceTest {
 
     @Test
     public void testFind1() throws Exception {
-        RealtimeThroughputCondition realtimeThroughputCondition = new RealtimeThroughputCondition();
-        realtimeThroughputCondition.setUnitId(unitId);
-        List<AnalysisType> types = new ArrayList<>();
-        types.add(AnalysisType.ONE_MINUTE);
-        types.add(AnalysisType.FIVE_MINUTE);
-        types.add(AnalysisType.FIFTEEN_MINUTE);
-        realtimeThroughputCondition.setType(ThroughputType.MEM);
-        realtimeThroughputCondition.setAnalysisType(types);
-        Map<AnalysisType, ThroughputInfo> map = throughputStatService.listRealtimeThroughput(realtimeThroughputCondition);
-        for (Map.Entry<AnalysisType, ThroughputInfo> entry : map.entrySet()) {
-            System.out.println("##" + entry);
-        }
     }
 
     @Test
@@ -87,6 +75,6 @@ public class ThroughputStatServiceTest {
 
     @Test
     public void testReal() throws Exception {
-        System.out.println("##" + throughputStatService.listRealTimeThroughtForView());
+        System.out.println("##" + throughputStatService.listTimeLineThroughtForView());
     }
 }

@@ -25,4 +25,17 @@ public class StatInfo {
     private long executeOpm;
     private long executeError;
 
+    private long mqOpm;
+
+    public void sub(StatInfo statInfo) {
+        this.bufferSize += statInfo.getBufferSize();
+        this.remainingCapacity += statInfo.getRemainingCapacity();
+        this.activeCount += statInfo.getActiveCount();
+        this.taskCount += statInfo.getTaskCount();
+        this.redisZsetSize += statInfo.getRedisZsetSize();
+        this.publishOpm += statInfo.getPublishOpm();
+        this.executeOpm += statInfo.getExecuteOpm();
+        this.executeError += statInfo.getExecuteError();
+        this.mqOpm += statInfo.getMqOpm();
+    }
 }

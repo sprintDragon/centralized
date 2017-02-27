@@ -14,6 +14,9 @@ import java.util.concurrent.atomic.AtomicLong;
 @Slf4j
 public class StatMonitor {
 
+    private static long mqOpm;//MQ接收
+    public static AtomicLong mqOpmCount = new AtomicLong();
+
     private static long publishOpm;
     private static long executeOpm;
     public static AtomicLong publishCount = new AtomicLong();
@@ -28,7 +31,8 @@ public class StatMonitor {
                     long start = System.currentTimeMillis();
                     executeOpm = executeCount.getAndSet(0);
                     publishOpm = publishCount.getAndSet(0);
-                    log.info("StatMonitor running 每分钟生产数量={},每分钟处理数量={}", publishOpm, executeOpm);
+                    mqOpm = mqOpmCount.getAndSet(0);
+                    log.info("StatMonitor running  每分钟 MQ接收={},生产数量={},每分钟处理数量={}", mqOpm, publishOpm, executeOpm);
                     try {
                         Thread.sleep(60 * Timer.ONE_SECOND - (System.currentTimeMillis() - start));
                     } catch (InterruptedException e) {
@@ -41,8 +45,12 @@ public class StatMonitor {
 
     public StatInfo getMonitor() {
         StatInfo monitor = new StatInfo();
-        monitor.setExecuteOpm(executeOpm);
-        monitor.setExecuteError(executeErrorCount.get());
+//        monitor.setExecuteOpm(executeOpm);
+//        monitor.setExecuteError(executeErrorCount.get());
+//        monitor.setMqOpm(mqOpm);
+        monitor.setExecuteOpm(new Integer(100));
+        monitor.setExecuteError(new Integer(100));
+        monitor.setMqOpm(new Integer(100));
         return monitor;
     }
 
