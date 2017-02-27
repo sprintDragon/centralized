@@ -50,10 +50,10 @@ public class ThroughputStat implements Serializable {
         if (this.number == null) {
             this.number = 0l;
         }
-        this.size += stat.getSize();
         if (this.size == null) {
             this.size = 0l;
         }
+        this.number += stat.getNumber();
         this.size += stat.getSize();
     }
 
