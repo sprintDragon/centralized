@@ -14,30 +14,19 @@
  * limitations under the License.
  */
 
-package org.sprintdragon.centralized.shared.statistics.throughput;
+package org.sprintdragon.centralized.manager.statistics.throughput.param;
 
 import lombok.Data;
 import lombok.ToString;
 
-import java.io.Serializable;
-import java.util.Date;
-
 /**
- * 吞吐量统计
  */
-@Data
 @ToString
-public class ThroughputStat implements Serializable {
+@Data
+public class ThroughputView {
 
-    private static final long serialVersionUID = 1953478777704061454L;
-    private Long id;
+    private Long time;
     private Long unitId;
-    private Date startTime;
-    private Date endTime;
-    private ThroughputType typeEnum;
-    private Long number;
-    private Long size;
-    private Date create;
-    private Date modified;
+    private Long n;
 
 }

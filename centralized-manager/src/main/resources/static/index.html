@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Highcharts</title>
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+</head>
+<body>
+<div id="container" style="width: 550px; height: 400px; margin: 0 auto"></div>
+<script language="JavaScript">
+    $(document).ready(function () {
+
+    });
+</script>
+</body>
+</html>
+
+<script>
+    $(function () {
+        jQuery.ajax({
+            url: '/throughput/listReal',
+//            data:{customsid:customsid},
+            type: 'GET',
+            cache: false,
+            success: function (data) {
+                if (data) {
+                    var title = {
+                        text: '月平均气温'
+                    };
+                    var subtitle = {
+                        text: 'Source: runoob.com'
+                    };
+                    var xAxis = {
+                        categories: ['一月', '二月', '三月', '四月', '五月', '六月'
+                            , '七月', '八月', '九月', '十月', '十一月', '十二月']
+                    };
+                    var yAxis = {
+                        title: {
+                            text: 'Temperature (\xB0C)'
+                        },
+                        plotLines: [{
+                            value: 0,
+                            width: 1,
+                            color: '#808080'
+                        }]
+                    };
+
+                    var tooltip = {
+                        valueSuffix: '\xB0C'
+                    }
+
+                    var legend = {
+                        layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'middle',
+                        borderWidth: 0
+                    };
+
+                    var series = data;
+
+                    var json = {};
+
+                    json.title = title;
+                    json.subtitle = subtitle;
+                    json.xAxis = xAxis;
+                    json.yAxis = yAxis;
+                    json.tooltip = tooltip;
+                    json.legend = legend;
+                    json.series = series;
+                    $('#container').highcharts(json);
+                }
+            },
+            error: function (e) {
+                alert('ajax error');
+            }
+        });
+
+    });
+
+</script>

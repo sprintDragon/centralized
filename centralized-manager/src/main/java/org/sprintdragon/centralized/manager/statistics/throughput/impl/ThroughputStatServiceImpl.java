@@ -16,6 +16,7 @@
 
 package org.sprintdragon.centralized.manager.statistics.throughput.impl;
 
+import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.sprintdragon.centralized.manager.statistics.throughput.ThroughputStatService;
 import org.sprintdragon.centralized.manager.statistics.throughput.param.*;
@@ -25,14 +26,17 @@ import org.sprintdragon.centralized.shared.statistics.throughput.ThroughputStat;
 import org.sprintdragon.centralized.shared.statistics.throughput.ThroughputType;
 import org.sprintdragon.centralized.shared.utils.CopyPropertyUtils;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 /**
  * @author danping.yudp
  */
+@Service
 public class ThroughputStatServiceImpl implements ThroughputStatService {
 
-    private ThroughputStatRepository throughputStatRepository;
+    @Resource
+    ThroughputStatRepository throughputStatRepository;
 
     /**
      * 在数据库中插入throughputStat
@@ -79,9 +83,35 @@ public class ThroughputStatServiceImpl implements ThroughputStatService {
 
     }
 
+    @Override
+    public List<Kav> listRealTimeThroughtForView() {
+        RealtimeThroughputCondition condition = new RealtimeThroughputCondition();
+        condition.setUnitId(101l);
+        condition.setAnalysisType(new ArrayList<AnalysisType>() {{
+            add(AnalysisType.ONE_MINUTE);
+        }});
+        List<Kav> kavs = new ArrayList<>();
+        for (ThroughputType throughputType : ThroughputType.values()) {
+            condition.setType(throughputType);
+            Kav kav = new Kav();
+            kav.setName(throughputType.name());
+            List<Long> vs = new ArrayList<>();
+            for (Map.Entry<AnalysisType, ThroughputInfo> entry : listRealtimeThroughput(condition).entrySet()) {
+                long n = 0;
+                for (ThroughputStat stat : entry.getValue().getItems()) {
+                    n += stat.getNumber() * stat.getSize();
+                }
+                vs.add(n);
+            }
+            kav.setData(vs);
+            kavs.add(kav);
+        }
+        return kavs;
+    }
+
     /**
      * <pre>
-     * 列出pipeLineId下，start-end时间段下的throughputStat
+     * 列出unitId下，start-end时间段下的throughputStat
      * 首先从数据库中取出这一段时间所以数据，该数据都是根据end_time倒排序的, 每隔1分钟将这些数据分组
      * </pre>
      */
@@ -110,12 +140,11 @@ public class ThroughputStatServiceImpl implements ThroughputStatService {
                 throughputInfo.setSeconds(1 * 60L);
                 throughputInfos.put(i, throughputInfo);
             }
-
         }
         return throughputInfos;
     }
 
-//    public List<ThroughputStat> listRealtimeThroughputByPipelineIds(List<Long> pipelineIds, int minute) {
+    //    public List<ThroughputStat> listRealtimeThroughputByPipelineIds(List<Long> pipelineIds, int minute) {
 //        Assert.isTrue(pipelineIds != null);
 //        List<ThroughputStatDO> throughputStatDOs = throughputDao.listRealTimeThroughputStatByPipelineIds(pipelineIds,
 //                minute);
@@ -136,7 +165,7 @@ public class ThroughputStatServiceImpl implements ThroughputStatService {
      */
     private ThroughputStatDO throughputStatModelToDo(ThroughputStat throughputStat) {
         ThroughputStatDO throughputStatDO = CopyPropertyUtils.copyPropertiesAndInstance(throughputStat, ThroughputStatDO.class);
-        throughputStatDO.setType(throughputStat.getType().name());
+        throughputStatDO.setType(throughputStat.getTypeEnum().name());
         return throughputStatDO;
     }
 
@@ -148,7 +177,7 @@ public class ThroughputStatServiceImpl implements ThroughputStatService {
      */
     private ThroughputStat throughputStatDOToModel(ThroughputStatDO throughputStatDO) {
         ThroughputStat throughputStat = CopyPropertyUtils.copyPropertiesAndInstance(throughputStatDO, ThroughputStat.class);
-        throughputStat.setType(ThroughputType.valueOf(throughputStatDO.getType()));
+        throughputStat.setTypeEnum(ThroughputType.valueOf(throughputStatDO.getType()));
         return throughputStat;
     }
 

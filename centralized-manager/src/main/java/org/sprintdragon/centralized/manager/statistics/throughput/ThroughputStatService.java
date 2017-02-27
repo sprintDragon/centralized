@@ -19,19 +19,22 @@ package org.sprintdragon.centralized.manager.statistics.throughput;
 import org.sprintdragon.centralized.manager.statistics.throughput.param.*;
 import org.sprintdragon.centralized.shared.statistics.throughput.ThroughputStat;
 
+import java.util.List;
 import java.util.Map;
 
 /**
  */
 public interface ThroughputStatService {
 
-    public Map<AnalysisType, ThroughputInfo> listRealtimeThroughput(RealtimeThroughputCondition condition);
+    Map<AnalysisType, ThroughputInfo> listRealtimeThroughput(RealtimeThroughputCondition condition);
 
-    public Map<Long, ThroughputInfo> listTimelineThroughput(TimelineThroughputCondition condition);
+    List<Kav> listRealTimeThroughtForView();
+
+    Map<Long, ThroughputInfo> listTimelineThroughput(TimelineThroughputCondition condition);
 
 //    public List<ThroughputStat> listRealtimeThroughputByPipelineIds(List<Long> pipelineIds, int minute);
 
-    public ThroughputStat findThroughputStatByUnitId(ThroughputCondition condition);
+    ThroughputStat findThroughputStatByUnitId(ThroughputCondition condition);
 
-    public void createOrUpdateThroughput(ThroughputStat item);
+    void createOrUpdateThroughput(ThroughputStat item);
 }

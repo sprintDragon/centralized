@@ -16,12 +16,14 @@
 
 package org.sprintdragon.centralized.manager.statistics.throughput.param;
 
+import lombok.ToString;
 import org.sprintdragon.centralized.shared.statistics.throughput.ThroughputStat;
 
 import java.util.List;
 
 /**
  */
+@ToString
 public class ThroughputInfo {
 
     private Long                 seconds = 60L;

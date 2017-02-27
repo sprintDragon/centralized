@@ -1,4 +1,4 @@
-package org.sprintdragon.centralized.manager.test;
+package org.sprintdragon.centralized.manager.test.throughput;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
