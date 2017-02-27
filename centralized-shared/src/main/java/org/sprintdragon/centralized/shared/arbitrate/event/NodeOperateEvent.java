@@ -19,7 +19,7 @@ public class NodeOperateEvent implements OperateEvent<Node> {
     @Override
     public void upsert(Node node) throws Exception {
         //添加info节点
-        String path = ManagePathUtils.getUnitNodePath(node.getUnit().getUnitId(), node.getServerInfo().getIp());
+        String path = ManagePathUtils.getUnitNodePath(node.getUnit().getUnitId() + "", node.getServerInfo().getIp());
         if (client.checkExists().forPath(path) == null) {
             client.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(path, JSON.toJSONString(node).getBytes());
         } else {

@@ -14,7 +14,7 @@ import java.util.Date;
 @ToString
 public class Unit {
 
-    private String unitId;
+    private Long unitId;
     private DbInfo dbInfo;
     private StatInfo statInfo;
 

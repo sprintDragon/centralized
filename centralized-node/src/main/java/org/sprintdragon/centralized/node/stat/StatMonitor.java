@@ -2,9 +2,13 @@ package org.sprintdragon.centralized.node.stat;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.sprintdragon.centralized.shared.arbitrate.config.ArbitrateConfigRegistry;
 import org.sprintdragon.centralized.shared.model.info.StatInfo;
+import org.sprintdragon.centralized.shared.statistics.throughput.ThroughputStat;
+import org.sprintdragon.centralized.shared.statistics.throughput.ThroughputType;
 
 import javax.management.timer.Timer;
+import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -44,15 +48,44 @@ public class StatMonitor {
         }).start();
     }
 
-    public StatInfo getMonitor() {
-        StatInfo monitor = new StatInfo();
+    public StatInfo getStatInfo() {
+        StatInfo statInfo = new StatInfo();
 //        monitor.setExecuteOpm(executeOpm);
 //        monitor.setExecuteError(executeErrorCount.get());
 //        monitor.setMqOpm(mqOpm);
-        monitor.setExecuteOpm(new Random().nextInt(100));
-        monitor.setExecuteError(new Random().nextInt(100));
-        monitor.setMqOpm(new Random().nextInt(100));
-        return monitor;
+        ThroughputStat mqStat = reportStat(ThroughputType.MQ);
+        ThroughputStat memStat = reportStat(ThroughputType.MEM);
+        ThroughputStat rowStat = reportStat(ThroughputType.ROW);
+        statInfo.setMemThroughputStat(memStat);
+        statInfo.setMqThroughputStat(mqStat);
+        statInfo.setRowThroughputStat(rowStat);
+        return statInfo;
     }
+
+    private ThroughputStat reportStat(ThroughputType throughputType) {
+        ThroughputStat stat = new ThroughputStat();
+        stat.setUnitId(ArbitrateConfigRegistry.getConfig().currentUnit().getUnitId());
+        stat.setTypeEnum(throughputType);
+        stat.setCreate(new Date());
+        stat.setModified(new Date());
+        stat.setSize(1l);
+        Date from = new Date(System.currentTimeMillis() - 60 * Timer.ONE_SECOND);
+        stat.setStartTime(from);
+        stat.setEndTime(new Date());
+        switch (throughputType) {
+            case MEM:
+                stat.setNumber((long) new Random().nextInt(100));
+                break;
+            case ROW:
+                stat.setNumber((long) new Random().nextInt(100));
+                break;
+            case MQ:
+                stat.setNumber((long) new Random().nextInt(100));
+                break;
+            default:
+        }
+        return stat;
+    }
+
 
 }

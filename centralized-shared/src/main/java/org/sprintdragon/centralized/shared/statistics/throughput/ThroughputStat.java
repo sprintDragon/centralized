@@ -40,4 +40,21 @@ public class ThroughputStat implements Serializable {
     private Date create;
     private Date modified;
 
+    public void sub(ThroughputStat stat) {
+        this.unitId = stat.getUnitId();
+        this.startTime = stat.getStartTime();
+        this.endTime = stat.getEndTime();
+        this.typeEnum = stat.getTypeEnum();
+        this.create = stat.getCreate();
+        this.modified = stat.getModified();
+        if (this.number == null) {
+            this.number = 0l;
+        }
+        this.size += stat.getSize();
+        if (this.size == null) {
+            this.size = 0l;
+        }
+        this.size += stat.getSize();
+    }
+
 }

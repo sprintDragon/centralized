@@ -4,11 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.leader.LeaderSelector;
 import org.apache.curator.framework.recipes.leader.LeaderSelectorListenerAdapter;
+import org.sprintdragon.centralized.shared.arbitrate.config.ArbitrateConfigRegistry;
 import org.sprintdragon.centralized.shared.arbitrate.event.NodeOperateEvent;
 import org.sprintdragon.centralized.shared.arbitrate.helper.ManagePathUtils;
 import org.sprintdragon.centralized.shared.model.Node;
 import org.sprintdragon.centralized.shared.model.enums.MsType;
-import org.sprintdragon.centralized.shared.arbitrate.config.ArbitrateConfigRegistry;
 
 import javax.annotation.Resource;
 
@@ -29,7 +29,7 @@ public class LeaderDispatch extends ZKBase {
      * 异步监控，存在初始化过快，无法确定Leader，如必须在初始化时Leader执行，就在方法中直接调用
      */
     public void leaderSelector() {
-        String path = ManagePathUtils.getUnitLeaderPath(ArbitrateConfigRegistry.getConfig().currentUnit().getUnitId()) + "/leader";
+        String path = ManagePathUtils.getUnitLeaderPath(ArbitrateConfigRegistry.getConfig().currentUnit().getUnitId() + "") + "/leader";
         LeaderSelector selector = new LeaderSelector(curatorFramework, path,
                 new LeaderSelectorListenerAdapter() {
                     @Override

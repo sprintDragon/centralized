@@ -32,7 +32,7 @@ public class StatScheduled {
         try {
             Node node = ArbitrateConfigRegistry.getConfig().currentNode();
             if (node.getMsType() == MsType.SLAVE) {
-                StatInfo statInfo = statMonitor.getMonitor();
+                StatInfo statInfo = statMonitor.getStatInfo();
                 node.setStatInfo(statInfo);
             } else {
                 List<Node> nodeList = nodeOperateEvent.list();

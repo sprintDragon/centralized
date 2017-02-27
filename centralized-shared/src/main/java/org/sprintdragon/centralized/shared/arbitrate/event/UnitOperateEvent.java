@@ -3,13 +3,13 @@ package org.sprintdragon.centralized.shared.arbitrate.event;
 import com.alibaba.fastjson.JSON;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.zookeeper.CreateMode;
+import org.sprintdragon.centralized.shared.arbitrate.helper.ManagePathUtils;
 import org.sprintdragon.centralized.shared.model.Node;
 import org.sprintdragon.centralized.shared.model.Unit;
+import org.sprintdragon.centralized.shared.model.builder.NodeBuilder;
 import org.sprintdragon.centralized.shared.model.enums.NodeStatus;
 import org.sprintdragon.centralized.shared.model.info.ServerInfo;
 import org.sprintdragon.centralized.shared.utils.SystemIpUtil;
-import org.sprintdragon.centralized.shared.arbitrate.helper.ManagePathUtils;
-import org.sprintdragon.centralized.shared.model.builder.NodeBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,7 @@ public class UnitOperateEvent implements OperateEvent<Unit> {
     @Override
     public void upsert(Unit unit) throws Exception {
         //添加info节点
-        String path = ManagePathUtils.getUnitInfoPath(unit.getUnitId());
+        String path = ManagePathUtils.getUnitInfoPath(unit.getUnitId() + "");
         if (client.checkExists().forPath(path) == null) {
             client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(path, JSON.toJSONString(unit).getBytes());
         } else {
